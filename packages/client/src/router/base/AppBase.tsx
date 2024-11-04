@@ -1,4 +1,13 @@
-import { AppShell, Burger, Group, NavLink, Title } from "@mantine/core";
+import {
+    Anchor,
+    AppShell,
+    Breadcrumbs,
+    Burger,
+    Container,
+    Group,
+    NavLink,
+    Title,
+} from "@mantine/core";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { useTranslation } from "react-i18next";
@@ -9,30 +18,26 @@ function AppBase() {
     const location = useLocation();
     const { t, i18n } = useTranslation();
 
+    document.title = t("app.title");
+
     useHotkeys([
         ["1", () => i18n.changeLanguage("en")],
         ["2", () => i18n.changeLanguage("tr")],
     ]);
 
+    const pathname = location.pathname.split("dashboard")[1].replace(/^\//, "");
     const links = [
-        { label: t("links.home"), href: "", icon: <IconHome size={16} /> },
         {
-            label: t("links.users"),
+            label: t("app.links.dashboard"),
+            href: "",
+            icon: <IconHome size={16} />,
+        },
+        {
+            label: t("app.links.users"),
             href: "users",
             icon: <IconUsers size={16} />,
         },
-    ].map((link) => (
-        <NavLink
-            key={link.href}
-            component={Link}
-            to={link.href}
-            label={link.label}
-            leftSection={link.icon}
-            rightSection={<IconChevronRight size={16} />}
-            active={`/${link.href}` === location.pathname}
-            onClick={close}
-        />
-    ));
+    ];
 
     return (
         <AppShell
@@ -56,17 +61,32 @@ function AppBase() {
                             onClick={toggle}
                         />
                         <Title order={1} fz={"h2"}>
-                            App
+                            {t("app.title")}
                         </Title>
                     </Group>
                 </Group>
             </AppShell.Header>
 
-            <AppShell.Main>
-                <Outlet />
-            </AppShell.Main>
+            <AppShell.Navbar>
+                {links.map((link) => (
+                    <NavLink
+                        key={link.href}
+                        component={Link}
+                        to={link.href}
+                        label={link.label}
+                        leftSection={link.icon}
+                        rightSection={<IconChevronRight size={16} />}
+                        active={link.href === pathname}
+                        onClick={close}
+                    />
+                ))}
+            </AppShell.Navbar>
 
-            <AppShell.Navbar>{links}</AppShell.Navbar>
+            <AppShell.Main>
+                <Container size={"md"} pt={20}>
+                    <Outlet />
+                </Container>
+            </AppShell.Main>
         </AppShell>
     );
 }

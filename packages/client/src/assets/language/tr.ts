@@ -1,17 +1,37 @@
-import { languageType } from ".";
+export const tr = {
+    app: {
+        title: "Program",
+        links: {
+            dashboard: "Panel",
+            users: "Kullanıcılar",
+        },
+    },
+    users: {
+        table_name: "İsim",
+        table_email: "E-Posta",
+        table_role: "Rol",
+        table_edit: "Düzenle",
 
-export const tr: languageType = {
-  login: {
-    title: "Giriş",
-    loginBtn: "Giriş",
-    resetBtn: "Sıfırla",
-    loginInput: {
-      email: "E-posta",
-      password: "Şifre",
+        search_input: "Ara...",
+
+        role: {
+            admin: "Admin",
+            user: "Kullanıcı",
+        },
+
+        error: "Hata Oluştu",
     },
-    validation: {
-      email: "Geçersiz e-posta",
-      password: "Şifre en az 4 karakter içermelidir",
+    login: {
+        title: "Giriş",
+        loginBtn: "Giriş",
+        resetBtn: "Sıfırla",
+        loginInput: {
+            email: "E-posta",
+            password: "Şifre",
+        },
+        validation: {
+            email: "Geçersiz e-posta",
+            password: "Şifre en az 4 karakter içermelidir",
+        },
     },
-  },
 } as const;

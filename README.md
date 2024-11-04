@@ -1,31 +1,31 @@
 # Mantine + Vite + React + TS + Express Monorepo Template
 
-- `packages/`
+-   `packages/`
 
-  - `client/`
+    -   `client/`
 
-    - [Mantine](https://mantine.dev/)
-    - [React](https://react.dev/)
-    - [Vite](https://vitejs.dev/)
+        -   [Mantine](https://mantine.dev/)
+        -   [React](https://react.dev/)
+        -   [Vite](https://vitejs.dev/)
 
-    - import `@common` for shared types
+        -   import `@common` for shared types
 
-  - `server/`
+    -   `server/`
 
-    - `src/`
+        -   `src/`
 
-      - [Express](https://expressjs.com/), cors and dotenv
+            -   [Express](https://expressjs.com/), cors and dotenv
 
-      - import `@common` for shared types
+            -   import `@common` for shared types
 
-  - `shared/`
+    -   `shared/`
 
-    - `src/`
+        -   `src/`
 
-      - index.ts (define your shared types here)
+            -   index.ts (define your shared types here)
 
 ## Credits
 
 and most importantly
 
-- [deniz's template](https://github.com/thealan404/template-fullstack) <3
+-   [deniz's template](https://github.com/thealan404/template-fullstack) <3

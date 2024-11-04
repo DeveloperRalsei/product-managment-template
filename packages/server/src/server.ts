@@ -1,8 +1,16 @@
 import app from "./app";
 import { config } from "dotenv";
 config();
+import dbConfig from "./config/db";
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () =>
-  console.log(`Server started on port ${PORT} | http://localhost:${PORT}`)
-);
+dbConfig
+    .connectDb()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error(error);
+    });
