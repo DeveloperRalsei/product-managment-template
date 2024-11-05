@@ -42,17 +42,6 @@ export const Users = () => {
                 const response = await fetch("/api/v1/users");
                 const data = await response.json();
 
-                Array(200)
-                    .fill(0)
-                    .forEach((_, index) => {
-                        data.users.push({
-                            _id: index + 1,
-                            name: `User ${index + 1}`,
-                            email: `user${index + 1}@gmail.com`,
-                            role: "user",
-                        });
-                    });
-
                 dispatch({ type: SET_USERS, payload: data.users });
             } catch (error) {
                 console.error(error);
@@ -81,6 +70,15 @@ export const Users = () => {
         },
     ];
 
+    const selectedUsersQuery = new URLSearchParams();
+
+    let emailQuery: string[] = [];
+    selectedRows.forEach((email) => {
+        emailQuery.push(email);
+    });
+
+    selectedUsersQuery.append("email", emailQuery.join(","));
+
     return (
         <Stack>
             <BreadCrumbs data={breadcrumbs} />
@@ -94,30 +92,50 @@ export const Users = () => {
                 <Group w={"100%"} justify="space-between">
                     <Group>
                         <Tooltip label={t("users.add_user")}>
-                            <ActionIcon>
+                            <ActionIcon
+                                component={Link}
+                                to={"/dashboard/users/add"}>
                                 <IconPlus size={16} />
                             </ActionIcon>
                         </Tooltip>
-                        <Tooltip label={t("users.delete_user")}>
-                            <ActionIcon color="red">
-                                <IconTrash size={16} />
-                            </ActionIcon>
-                        </Tooltip>
+
+                        {selectedRows.length > 0 && (
+                            <Tooltip label={t("users.delete_user")}>
+                                <ActionIcon
+                                    color="red"
+                                    component={Link}
+                                    to={
+                                        "/dashboard/users/delete?" +
+                                        selectedUsersQuery
+                                    }>
+                                    <IconTrash size={16} />
+                                </ActionIcon>
+                            </Tooltip>
+                        )}
                     </Group>
-                    <Group>
-                        <Select
-                            value={String(pageSize)}
-                            onChange={(e) => setPageSize(Number(e))}
-                            data={["5", "10", "20", "30", "50", "100"]}
-                            width={30}
-                        />
-                        <Pagination
-                            total={Math.ceil(filteredUsers.length / pageSize)}
-                            value={page}
-                            onChange={setPage}
-                            size="sm"
-                        />
-                    </Group>
+                    <Pagination
+                        total={Math.ceil(filteredUsers.length / pageSize)}
+                        visibleFrom="md"
+                        value={page}
+                        onChange={setPage}
+                        size="sm"
+                    />
+                    <Select
+                        value={String(pageSize)}
+                        w={100}
+                        withScrollArea
+                        onChange={(e) => setPageSize(Number(e))}
+                        data={["5", "10", "20", "30", "50", "100"]}
+                    />
+                </Group>
+                <Group hiddenFrom="md" justify="center" w={"100%"}>
+                    <Pagination
+                        total={Math.ceil(filteredUsers.length / pageSize)}
+                        value={page}
+                        onChange={setPage}
+                        withControls={false}
+                        size={"sm"}
+                    />
                 </Group>
             </Group>
             <Table.ScrollContainer minWidth={700}>
@@ -128,7 +146,22 @@ export const Users = () => {
                     withTableBorder>
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Td />
+                            <Table.Td w={0}>
+                                <Checkbox
+                                    onChange={(e) => {
+                                        if (e.target.checked) {
+                                            users.forEach((user) =>
+                                                setSelectedRows((prev) => [
+                                                    ...prev,
+                                                    user.email,
+                                                ])
+                                            );
+                                        } else {
+                                            setSelectedRows([]);
+                                        }
+                                    }}
+                                />
+                            </Table.Td>
                             <Table.Td w={0}>#</Table.Td>
                             <Table.Td>{t("users.table_name")}</Table.Td>
                             <Table.Td>{t("users.table_email")}</Table.Td>
@@ -214,8 +247,8 @@ export const Users = () => {
             </Table.ScrollContainer>
 
             <Stack>
-                {selectedRows.map((row) => (
-                    <Box key={row}>{row}</Box>
+                {selectedRows.map((row, i) => (
+                    <Box key={row + i}>{row}</Box>
                 ))}
             </Stack>
         </Stack>

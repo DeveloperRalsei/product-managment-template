@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppBase from "./base/AppBase";
-import { Home, Login, Error, Users, Edit } from "./pages";
+import { Home, Login, Error, Users, Edit, Add, Delete } from "./pages";
 
 export const router = createBrowserRouter([
     {
@@ -20,8 +20,16 @@ export const router = createBrowserRouter([
                 element: <Users />,
             },
             {
+                path: "users/delete",
+                element: <Delete />,
+            },
+            {
                 path: "users/edit/:id",
                 element: <Edit />,
+            },
+            {
+                path: "users/add",
+                element: <Add />,
             },
             {
                 path: "*",

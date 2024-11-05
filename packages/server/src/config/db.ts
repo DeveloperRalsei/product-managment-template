@@ -1,6 +1,6 @@
 import { connect, createConnection } from "mongoose";
 import { config } from "dotenv";
-config();
+config({ path: "../../.env" });
 const MONGODB_URI = process.env.MONGODB_URI!;
 
 async function createDb() {
