@@ -20,6 +20,9 @@ export const en = {
         },
 
         error: "Error",
+
+        add_user: "Add User",
+        delete_user: "Delete User",
     },
     login: {
         title: "Login",

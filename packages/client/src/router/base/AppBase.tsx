@@ -1,12 +1,14 @@
 import {
-    Anchor,
     AppShell,
-    Breadcrumbs,
+    Text,
+    Avatar,
     Burger,
     Container,
     Group,
     NavLink,
+    ScrollArea,
     Title,
+    Stack,
 } from "@mantine/core";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
@@ -43,7 +45,7 @@ function AppBase() {
         <AppShell
             header={{ height: 65 }}
             navbar={{
-                width: 200,
+                width: 250,
                 breakpoint: "sm",
                 collapsed: { desktop: false, mobile: !opened },
             }}>
@@ -68,18 +70,35 @@ function AppBase() {
             </AppShell.Header>
 
             <AppShell.Navbar>
-                {links.map((link) => (
-                    <NavLink
-                        key={link.href}
-                        component={Link}
-                        to={link.href}
-                        label={link.label}
-                        leftSection={link.icon}
-                        rightSection={<IconChevronRight size={16} />}
-                        active={link.href === pathname}
-                        onClick={close}
-                    />
-                ))}
+                <AppShell.Section grow my={"md"} component={ScrollArea}>
+                    {links.map((link) => (
+                        <NavLink
+                            key={link.href}
+                            component={Link}
+                            to={link.href}
+                            label={link.label}
+                            leftSection={link.icon}
+                            rightSection={<IconChevronRight size={16} />}
+                            active={link.href === pathname}
+                            onClick={close}
+                        />
+                    ))}
+                </AppShell.Section>
+                <AppShell.Section px={"sm"} py={"md"} bd={"dashed"}>
+                    <Group>
+                        <Group gap={5} h={60}>
+                            <Avatar />
+                            <Stack>
+                                <Text size="sm" fz="sm" fw={500}>
+                                    {t("app.user.name")}
+                                </Text>
+                                <Text size="sm" fz="xs">
+                                    {t("app.user.email")}
+                                </Text>
+                            </Stack>
+                        </Group>
+                    </Group>
+                </AppShell.Section>
             </AppShell.Navbar>
 
             <AppShell.Main>

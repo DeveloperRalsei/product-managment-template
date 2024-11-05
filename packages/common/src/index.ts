@@ -1,7 +1,7 @@
 export const serverPort = 3000;
 
 export interface User {
-    id: number;
+    _id: number;
     name: string;
     email: string;
     password: string;

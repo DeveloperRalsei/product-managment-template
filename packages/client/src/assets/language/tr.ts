@@ -20,6 +20,9 @@ export const tr = {
         },
 
         error: "Hata Oluştu",
+
+        add_user: "Kullanıcı Ekle",
+        delete_user: "Kullanıcı Sil",
     },
     login: {
         title: "Giriş",

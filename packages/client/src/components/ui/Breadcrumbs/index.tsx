@@ -1,25 +1,35 @@
-import { Breadcrumbs, Anchor } from "@mantine/core";
+import { Breadcrumbs, Button } from "@mantine/core";
+import { IconArrowRight } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 
 export const BreadCrumbs = ({
-    data,
+    data = [{ label: "Dashboard", href: "/dashboard", disabled: false }],
 }: {
     data: {
         label: string;
         href: string;
+        icon?: React.ReactNode;
+        disabled?: boolean;
     }[];
 }) => {
     return (
-        <Breadcrumbs mb={25}>
+        <Breadcrumbs
+            mb={"md"}
+            separator={<IconArrowRight size={16} />}
+            separatorMargin={4}>
             {data.map((link, index) => (
-                <Anchor
+                <Button
                     key={link.label + index}
                     component={Link}
                     to={link.href}
+                    leftSection={link.icon}
+                    disabled={link.disabled}
+                    variant="subtle"
+                    size="compact-lg"
                     fz={{ sm: "h4", md: "h3" }}
                     fw={"bold"}>
                     {link.label}
-                </Anchor>
+                </Button>
             ))}
         </Breadcrumbs>
     );
