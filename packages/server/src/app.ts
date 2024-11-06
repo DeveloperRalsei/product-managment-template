@@ -13,9 +13,10 @@ api.use((req, _res, next) => {
     next();
 });
 
-import { loginRoutes, userRoutes, meRoute } from "./routes";
+import { loginRoutes, userRoutes, meRoute, logoutRoute } from "./routes";
 import { authMiddleware } from "./middleware/auth.middleware";
 api.use("/api/v1", loginRoutes);
+api.use("/api/v1", logoutRoute);
 api.use("/api/v1", authMiddleware, meRoute);
 api.use("/api/v1", authMiddleware, userRoutes);
 

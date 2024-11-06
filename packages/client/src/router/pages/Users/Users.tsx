@@ -17,11 +17,12 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useReducer, useState } from "react";
 import { BreadCrumbs } from "../../../components/ui/Breadcrumbs";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
-import { Link, redirect } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { reducer, initialState, reducerValues } from "./userReducer";
 
 export const Users = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     const [{ users }, dispatch] = useReducer(reducer, initialState);
 
@@ -37,11 +38,11 @@ export const Users = () => {
 
     useEffect(() => {
         async function fetchData() {
-            setLoading(true);
             try {
                 const response = await fetch("/api/v1/users");
 
                 if (!response.ok) {
+                    window.open("/", "_self");
                     throw new Error("Network Error");
                 }
 

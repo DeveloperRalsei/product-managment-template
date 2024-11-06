@@ -14,12 +14,13 @@ import { useTranslation } from "react-i18next";
 import { IconChevronRight, IconHome, IconUsers } from "@tabler/icons-react";
 import { UserManager } from "../../components/ui/UserManager";
 import { useUser } from "../../context/UserContext";
+import { useEffect } from "react";
 
 function AppBase() {
     const [opened, { toggle, close }] = useDisclosure(false);
     const location = useLocation();
     const { t, i18n } = useTranslation();
-    const { loading, user } = useUser();
+    const { user, loading } = useUser();
     const navigate = useNavigate();
 
     document.title = t("app.title");
@@ -29,8 +30,15 @@ function AppBase() {
         ["2", () => i18n.changeLanguage("tr")],
     ]);
 
+    useEffect(() => {
+        if (!user && !loading) {
+            navigate("/");
+        }
+    }, [user, loading, navigate]);
+
     if (!user) {
-        navigate("/");
+        open("/", "_self");
+        return <></>;
     }
 
     const pathname = location.pathname.split("dashboard")[1].replace(/^\//, "");
@@ -39,11 +47,13 @@ function AppBase() {
             label: t("app.links.dashboard"),
             href: "",
             icon: <IconHome size={16} />,
+            isVisible: true,
         },
         {
             label: t("app.links.users"),
             href: "users",
             icon: <IconUsers size={16} />,
+            isVisible: user?.role === "admin",
         },
     ];
 
@@ -84,6 +94,7 @@ function AppBase() {
                             component={Link}
                             to={link.href}
                             label={link.label}
+                            display={link.isVisible ? "flex" : "none"}
                             leftSection={link.icon}
                             rightSection={<IconChevronRight size={16} />}
                             active={link.href === pathname}
@@ -92,7 +103,10 @@ function AppBase() {
                     ))}
                 </AppShell.Section>
                 {user && (
-                    <AppShell.Section px={"sm"} py={"md"} bd={"dashed"}>
+                    <AppShell.Section
+                        px={"sm"}
+                        py={"md"}
+                        bd={"1px 0 0 0 var(--mantine-color-dark)"}>
                         <UserManager user={user} />
                     </AppShell.Section>
                 )}

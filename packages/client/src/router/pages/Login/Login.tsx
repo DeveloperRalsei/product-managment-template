@@ -20,16 +20,16 @@ export const Login = () => {
     const { t } = useTranslation();
     const [isVisible, setIsVisible] = useState(false);
     const [error, setError] = useState("");
-    const redirect = useNavigate();
     const { user, loading } = useUser();
+    const navigate = useNavigate();
 
     document.title = t("login.title");
 
     useEffect(() => {
         if (user) {
-            redirect("/dashboard");
+            navigate("/dashboard");
         }
-    }, [user]);
+    }, [user, navigate]);
 
     const form = useForm({
         initialValues: {
@@ -63,7 +63,7 @@ export const Login = () => {
             const data = await response.json();
 
             setError("");
-            redirect("/dashboard");
+            window.open("/dashboard", "_self");
         } catch (error) {
             console.error(error);
             setError("Login Failed");

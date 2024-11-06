@@ -24,5 +24,5 @@ export function decodeToken(token: string) {
 }
 
 export function getTokenFromCookie(req: Request) {
-    return req.cookies.userToken;
+    return req.cookies.userToken || "";
 }
