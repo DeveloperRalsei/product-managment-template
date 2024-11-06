@@ -6,7 +6,9 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 
 import "@mantine/core/styles.css";
+import "@mantine/nprogress/styles.css";
 import "./index.css";
+import { NavigationProgress } from "@mantine/nprogress";
 
 const theme = createTheme({
     components: {
@@ -21,6 +23,7 @@ const theme = createTheme({
 createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <MantineProvider theme={theme} defaultColorScheme="dark">
+            <NavigationProgress />
             <I18nextProvider i18n={i18n}>
                 <Router />
             </I18nextProvider>

@@ -3,6 +3,7 @@ import userModel from "../model/user.model";
 
 import {
     createUser,
+    findUserByEmail,
     findUserById,
     findUsersViaQuery,
 } from "../service/user.service";
@@ -93,7 +94,7 @@ export const addUser: RequestHandler = async (req, res) => {
     if (!name) userBody.name = "";
 
     try {
-        const findUser = await findUserById(req.body.email);
+        const findUser = await findUserByEmail(req.body.email);
 
         if (findUser) {
             res.status(400).json({

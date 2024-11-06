@@ -19,10 +19,11 @@ export const tr = {
             user: "Kullanıcı",
         },
 
-        error: "Hata Oluştu",
+        error: "Bir şeyler ters gitti, lütfen tekrar giriş yapmayı deneyin",
 
         add_user: "Kullanıcı Ekle",
         delete_user: "Kullanıcı Sil",
+        table_page_size: "Sayfa Sayısı",
     },
     login: {
         title: "Giriş",

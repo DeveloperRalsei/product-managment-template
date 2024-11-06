@@ -8,7 +8,6 @@ import {
     Stack,
     Table,
     TextInput,
-    Box,
     Avatar,
     Tooltip,
     Pagination,
@@ -18,7 +17,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useReducer, useState } from "react";
 import { BreadCrumbs } from "../../../components/ui/Breadcrumbs";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { reducer, initialState, reducerValues } from "./userReducer";
 
 export const Users = () => {
@@ -40,7 +39,14 @@ export const Users = () => {
             setLoading(true);
             try {
                 const response = await fetch("/api/v1/users");
+
                 const data = await response.json();
+
+                if (data.error === "Unauthorized") {
+                    setIsError(true);
+                    redirect("/login");
+                    return;
+                }
 
                 dispatch({ type: SET_USERS, payload: data.users });
             } catch (error) {
@@ -120,13 +126,18 @@ export const Users = () => {
                         onChange={setPage}
                         size="sm"
                     />
-                    <Select
-                        value={String(pageSize)}
-                        w={100}
-                        withScrollArea
-                        onChange={(e) => setPageSize(Number(e))}
-                        data={["5", "10", "20", "30", "50", "100"]}
-                    />
+
+                    <Group>
+                        <label>{t("users.table_page_size")}</label>
+                        <Select
+                            id="pageSize"
+                            value={String(pageSize)}
+                            w={100}
+                            withScrollArea
+                            onChange={(e) => setPageSize(Number(e))}
+                            data={["5", "10", "20", "30", "50", "100"]}
+                        />
+                    </Group>
                 </Group>
                 <Group hiddenFrom="md" justify="center" w={"100%"}>
                     <Pagination
@@ -222,12 +233,14 @@ export const Users = () => {
                                     <Table.Td>{user.email}</Table.Td>
                                     <Table.Td>
                                         {user.role === "admin" && (
-                                            <Badge color="red">
+                                            <Badge color="red" variant="dot">
                                                 {t("users.role.admin")}
                                             </Badge>
                                         )}
                                         {user.role === "user" && (
-                                            <Badge color="blue">
+                                            <Badge
+                                                color="blue"
+                                                variant="default">
                                                 {t("users.role.user")}
                                             </Badge>
                                         )}
@@ -245,12 +258,6 @@ export const Users = () => {
                     </Table.Tbody>
                 </Table>
             </Table.ScrollContainer>
-
-            <Stack>
-                {selectedRows.map((row, i) => (
-                    <Box key={row + i}>{row}</Box>
-                ))}
-            </Stack>
         </Stack>
     );
 };

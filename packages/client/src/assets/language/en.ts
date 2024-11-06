@@ -19,10 +19,11 @@ export const en = {
             user: "User",
         },
 
-        error: "Error",
+        error: "Something went wrong, please try login again",
 
         add_user: "Add User",
         delete_user: "Delete User",
+        table_page_size: "Page Size",
     },
     login: {
         title: "Login",

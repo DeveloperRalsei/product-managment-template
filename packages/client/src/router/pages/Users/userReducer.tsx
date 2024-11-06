@@ -1,8 +1,8 @@
-import { User } from "@common";
+import { UserWithId } from "@common";
 
 export const reducer = (
-    state: { users: User[] },
-    action: { type: string; payload: User[] }
+    state: { users: UserWithId[] },
+    action: { type: string; payload: UserWithId[] }
 ) => {
     switch (action.type) {
         case reducerValues.SET_USERS:

@@ -1,9 +1,12 @@
 export const serverPort = 3000;
 
 export interface User {
-    _id: number;
     name: string;
     email: string;
     password: string;
     role: "admin" | "user";
+}
+
+export interface UserWithId extends User {
+    _id: string;
 }
