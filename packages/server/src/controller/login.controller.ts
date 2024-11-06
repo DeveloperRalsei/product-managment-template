@@ -50,7 +50,7 @@ export const loginController: RequestHandler = async (req, res) => {
             httpOnly: true,
             secure: env.NODE_ENV === "production",
             maxAge: remeberMe ? 7 * 24 * 3600 * 1000 : 3600 * 1000,
-            path: "/dashboard",
+            path: "/",
         })
             .status(200)
             .json({

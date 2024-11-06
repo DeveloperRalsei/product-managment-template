@@ -3,18 +3,15 @@ import {
     Button,
     Card,
     Group,
+    LoadingOverlay,
     Stack,
     TextInput,
     Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { nprogress } from "@mantine/nprogress";
-import {
-    IconAlertCircle,
-    IconAlertCircleFilled,
-    IconEye,
-    IconEyeClosed,
-} from "@tabler/icons-react";
+import { IconAlertCircle, IconEye, IconEyeClosed } from "@tabler/icons-react";
+import { useUser } from "../../../context/UserContext";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -24,10 +21,15 @@ export const Login = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [error, setError] = useState("");
     const redirect = useNavigate();
+    const { user, loading } = useUser();
 
     document.title = t("login.title");
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        if (user) {
+            redirect("/dashboard");
+        }
+    }, [user]);
 
     const form = useForm({
         initialValues: {
@@ -59,10 +61,9 @@ export const Login = () => {
             }
 
             const data = await response.json();
-            console.log(data);
 
             setError("");
-            // redirect("/dashboard");
+            redirect("/dashboard");
         } catch (error) {
             console.error(error);
             setError("Login Failed");
@@ -73,6 +74,7 @@ export const Login = () => {
 
     return (
         <Stack mah={"100vh"} mih={"100vh"} align={"center"} justify={"center"}>
+            <LoadingOverlay visible={loading} />
             {error && (
                 <Alert color="red" icon={<IconAlertCircle />}>
                     {error}

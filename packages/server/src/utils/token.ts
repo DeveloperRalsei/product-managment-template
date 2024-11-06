@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { User } from "@common";
 import env from "../config/env";
+import { Request } from "express";
 
 const { JWT_SECRET } = env;
 
@@ -16,4 +17,12 @@ export function createToken(user: Omit<User, "password">) {
 
 export function verifyToken(token: string) {
     return jwt.verify(token, JWT_SECRET!, { maxAge: "1h" });
+}
+
+export function decodeToken(token: string) {
+    return jwt.decode(token);
+}
+
+export function getTokenFromCookie(req: Request) {
+    return req.cookies.userToken;
 }

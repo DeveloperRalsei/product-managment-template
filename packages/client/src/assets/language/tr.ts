@@ -24,6 +24,8 @@ export const tr = {
         add_user: "Kullanıcı Ekle",
         delete_user: "Kullanıcı Sil",
         table_page_size: "Sayfa Sayısı",
+
+        empty: "Kullanıcı bulunamadı",
     },
     login: {
         title: "Giriş",

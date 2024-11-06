@@ -24,6 +24,8 @@ export const en = {
         add_user: "Add User",
         delete_user: "Delete User",
         table_page_size: "Page Size",
+
+        empty: "No users found",
     },
     login: {
         title: "Login",

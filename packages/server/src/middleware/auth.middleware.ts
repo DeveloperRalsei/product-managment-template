@@ -1,5 +1,4 @@
 import { RequestHandler } from "express";
-import env from "../config/env";
 import { verifyToken } from "../utils/token";
 
 export const authMiddleware: RequestHandler = (req, res, next) => {
@@ -31,5 +30,5 @@ export const authMiddleware: RequestHandler = (req, res, next) => {
         });
         return;
     }
-    next();
+    return;
 };

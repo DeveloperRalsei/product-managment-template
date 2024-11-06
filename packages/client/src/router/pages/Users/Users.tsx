@@ -27,6 +27,7 @@ export const Users = () => {
 
     const { SET_USERS } = reducerValues;
 
+    const [isEmpty, setIsEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isError, setIsError] = useState(false);
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -40,11 +41,14 @@ export const Users = () => {
             try {
                 const response = await fetch("/api/v1/users");
 
+                if (!response.ok) {
+                    throw new Error("Network Error");
+                }
+
                 const data = await response.json();
 
-                if (data.error === "Unauthorized") {
-                    setIsError(true);
-                    redirect("/login");
+                if (data.users.length === 0) {
+                    setIsEmpty(true);
                     return;
                 }
 
@@ -192,6 +196,12 @@ export const Users = () => {
                             <Table.Tr>
                                 <Table.Td colSpan={99} ta={"center"}>
                                     <Text>{t("users.error")}</Text>
+                                </Table.Td>
+                            </Table.Tr>
+                        ) : isEmpty ? (
+                            <Table.Tr>
+                                <Table.Td colSpan={99} ta={"center"}>
+                                    <Text>{t("users.empty")}</Text>
                                 </Table.Td>
                             </Table.Tr>
                         ) : (

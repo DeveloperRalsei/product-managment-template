@@ -1,24 +1,26 @@
 import {
     AppShell,
-    Text,
-    Avatar,
     Burger,
     Container,
     Group,
     NavLink,
     ScrollArea,
     Title,
-    Stack,
+    LoadingOverlay,
 } from "@mantine/core";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDisclosure, useHotkeys } from "@mantine/hooks";
 import { useTranslation } from "react-i18next";
 import { IconChevronRight, IconHome, IconUsers } from "@tabler/icons-react";
+import { UserManager } from "../../components/ui/UserManager";
+import { useUser } from "../../context/UserContext";
 
 function AppBase() {
     const [opened, { toggle, close }] = useDisclosure(false);
     const location = useLocation();
     const { t, i18n } = useTranslation();
+    const { loading, user } = useUser();
+    const navigate = useNavigate();
 
     document.title = t("app.title");
 
@@ -26,6 +28,10 @@ function AppBase() {
         ["1", () => i18n.changeLanguage("en")],
         ["2", () => i18n.changeLanguage("tr")],
     ]);
+
+    if (!user) {
+        navigate("/");
+    }
 
     const pathname = location.pathname.split("dashboard")[1].replace(/^\//, "");
     const links = [
@@ -49,6 +55,7 @@ function AppBase() {
                 breakpoint: "sm",
                 collapsed: { desktop: false, mobile: !opened },
             }}>
+            <LoadingOverlay visible={loading} />
             <AppShell.Header>
                 <Group
                     w={"100%"}
@@ -84,21 +91,11 @@ function AppBase() {
                         />
                     ))}
                 </AppShell.Section>
-                <AppShell.Section px={"sm"} py={"md"} bd={"dashed"}>
-                    <Group>
-                        <Group gap={5} h={60}>
-                            <Avatar />
-                            <Stack>
-                                <Text size="sm" fz="sm" fw={500}>
-                                    {t("app.user.name")}
-                                </Text>
-                                <Text size="sm" fz="xs">
-                                    {t("app.user.email")}
-                                </Text>
-                            </Stack>
-                        </Group>
-                    </Group>
-                </AppShell.Section>
+                {user && (
+                    <AppShell.Section px={"sm"} py={"md"} bd={"dashed"}>
+                        <UserManager user={user} />
+                    </AppShell.Section>
+                )}
             </AppShell.Navbar>
 
             <AppShell.Main>
