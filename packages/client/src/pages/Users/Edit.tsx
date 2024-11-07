@@ -1,5 +1,5 @@
 import { Stack } from "@mantine/core";
-import { BreadCrumbs } from "../../../components/ui/Breadcrumbs";
+import { BreadCrumbs } from "../../components/ui/Breadcrumbs";
 
 export const Edit = () => {
     const breadcrumbs = [

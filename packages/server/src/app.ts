@@ -6,7 +6,6 @@ const api = express();
 
 api.use(cors());
 api.use(express.json());
-api.use(express.urlencoded({ extended: true }));
 api.use(cookieParser());
 api.use((req, _res, next) => {
     console.log(req.ip, req.hostname, req.path, req.method);

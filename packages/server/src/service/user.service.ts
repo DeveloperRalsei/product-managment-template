@@ -1,7 +1,7 @@
 import { ObjectId } from "mongoose";
 import userModel from "../model/user.model";
 import { User } from "@common";
-import { hashPassword } from "../utils/hasher";
+import { hash } from "../utils/hasher";
 
 export async function findUsers() {
     return userModel.find();
@@ -22,7 +22,7 @@ export async function findUserById(id: ObjectId | string) {
 
 export async function createUser(user: User) {
     try {
-        user.password = await hashPassword(user.password);
+        user.password = await hash(user.password);
         return userModel.create(user);
     } catch (error) {
         console.error(error);
@@ -34,4 +34,8 @@ export async function findUserByEmail(email: string) {
     return userModel.findOne({
         email,
     });
+}
+
+export async function deleteUser(id: ObjectId | string) {
+    return userModel.findByIdAndDelete(id);
 }

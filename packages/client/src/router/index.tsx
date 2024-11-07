@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppBase from "./base/AppBase";
-import { Home, Login, Error, Users, Edit, Add, Delete, Logout } from "./pages";
+import { Home, Login, Error, Users, Edit, Add, Delete, Logout } from "../pages";
 
 export const router = createBrowserRouter([
     {

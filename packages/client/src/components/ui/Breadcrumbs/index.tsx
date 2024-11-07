@@ -7,7 +7,7 @@ export const BreadCrumbs = ({
 }: {
     data: {
         label: string;
-        href: string;
+        href?: string;
         icon?: React.ReactNode;
         disabled?: boolean;
     }[];
@@ -15,13 +15,13 @@ export const BreadCrumbs = ({
     return (
         <Breadcrumbs
             mb={"md"}
-            separator={<IconArrowRight size={16} />}
-            separatorMargin={4}>
+            separator={<IconArrowRight size={12} />}
+            separatorMargin={0}>
             {data.map((link, index) => (
                 <Button
                     key={link.label + index}
                     component={Link}
-                    to={link.href}
+                    to={link.href || ""}
                     leftSection={link.icon}
                     disabled={link.disabled}
                     variant="subtle"

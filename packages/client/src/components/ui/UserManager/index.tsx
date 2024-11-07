@@ -18,8 +18,8 @@ import { Link } from "react-router-dom";
 export const UserManager = ({ user }: { user: User }) => {
     return (
         <Group>
-            <Group h={60} w={"100%"} justify="space-between">
-                <Group>
+            <Group h={60} w={"100%"} justify="space-between" wrap="nowrap">
+                <Group wrap="nowrap">
                     <Avatar />
                     <Stack gap={4}>
                         <Text size="sm" fz="sm" fw={500}>

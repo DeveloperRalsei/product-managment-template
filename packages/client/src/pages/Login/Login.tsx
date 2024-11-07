@@ -4,22 +4,22 @@ import {
     Card,
     Group,
     LoadingOverlay,
+    PasswordInput,
     Stack,
     TextInput,
     Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { nprogress } from "@mantine/nprogress";
-import { IconAlertCircle, IconEye, IconEyeClosed } from "@tabler/icons-react";
-import { useUser } from "../../../context/UserContext";
-import { useEffect, useState } from "react";
+import { IconAlertCircle } from "@tabler/icons-react";
+import { useUser } from "../../context/UserContext";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { showNotification } from "@mantine/notifications";
 
 export const Login = () => {
     const { t } = useTranslation();
-    const [isVisible, setIsVisible] = useState(false);
-    const [error, setError] = useState("");
     const { user, loading } = useUser();
     const navigate = useNavigate();
 
@@ -56,17 +56,20 @@ export const Login = () => {
             });
 
             if (!response.ok) {
-                setError("Login Failed");
                 throw new Error("Login Failed");
             }
 
-            const data = await response.json();
-
-            setError("");
+            showNotification({
+                color: "green",
+                message: t("login.success"),
+            });
             window.open("/dashboard", "_self");
         } catch (error) {
             console.error(error);
-            setError("Login Failed");
+            showNotification({
+                message: t("login.error"),
+                color: "red",
+            });
         } finally {
             nprogress.complete();
         }
@@ -75,11 +78,7 @@ export const Login = () => {
     return (
         <Stack mah={"100vh"} mih={"100vh"} align={"center"} justify={"center"}>
             <LoadingOverlay visible={loading} />
-            {error && (
-                <Alert color="red" icon={<IconAlertCircle />}>
-                    {error}
-                </Alert>
-            )}
+
             <Title order={1} fz={"h2"}>
                 Login
             </Title>
@@ -92,27 +91,9 @@ export const Login = () => {
                             type="email"
                             {...form.getInputProps("email")}
                         />
-                        <TextInput
+                        <PasswordInput
                             label={t("login.loginInput.password")}
                             withAsterisk
-                            rightSection={
-                                !isVisible ? (
-                                    <IconEyeClosed
-                                        size={16}
-                                        color="var(--mantine-color-gray-5)"
-                                        onClick={() => setIsVisible(true)}
-                                        cursor={"pointer"}
-                                    />
-                                ) : (
-                                    <IconEye
-                                        size={16}
-                                        color="var(--mantine-color-blue-5)"
-                                        onClick={() => setIsVisible(false)}
-                                        cursor={"pointer"}
-                                    />
-                                )
-                            }
-                            type={isVisible ? "text" : "password"}
                             {...form.getInputProps("password")}
                         />
                     </Stack>

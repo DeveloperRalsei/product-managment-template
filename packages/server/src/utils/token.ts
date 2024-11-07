@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { User } from "@common";
 import env from "../config/env";
 import { Request } from "express";
@@ -15,7 +15,7 @@ export function createToken(user: Omit<User, "password">) {
     });
 }
 
-export function verifyToken(token: string) {
+export function verifyToken(token: string): any {
     return jwt.verify(token, JWT_SECRET!, { maxAge: "1h" });
 }
 

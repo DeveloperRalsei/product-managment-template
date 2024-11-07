@@ -15,10 +15,11 @@ import {
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useEffect, useReducer, useState } from "react";
-import { BreadCrumbs } from "../../../components/ui/Breadcrumbs";
+import { BreadCrumbs } from "../../components/ui/Breadcrumbs";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import { Link, useNavigate } from "react-router-dom";
 import { reducer, initialState, reducerValues } from "./userReducer";
+import { useUser } from "../../context/UserContext";
 
 export const Users = () => {
     const { t } = useTranslation();
@@ -31,10 +32,11 @@ export const Users = () => {
     const [isEmpty, setIsEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isError, setIsError] = useState(false);
-    const [selectedRows, setSelectedRows] = useState<string[]>([]);
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+    const { user } = useUser();
 
     useEffect(() => {
         async function fetchData() {
@@ -52,6 +54,17 @@ export const Users = () => {
                     setIsEmpty(true);
                     return;
                 }
+
+                // Array(200)
+                //     .fill(0)
+                //     .forEach((_, index) => {
+                //         data.users.push({
+                //             _id: Math.random().toString(36).substring(2, 15),
+                //             name: `User ${index + 1}`,
+                //             email: `user${index + 1}@example.com`,
+                //             role: "user",
+                //         });
+                //     });
 
                 dispatch({ type: SET_USERS, payload: data.users });
             } catch (error) {
@@ -83,25 +96,31 @@ export const Users = () => {
 
     const selectedUsersQuery = new URLSearchParams();
 
-    let emailQuery: string[] = [];
-    selectedRows.forEach((email) => {
-        emailQuery.push(email);
+    let idsQuery: string[] = [];
+    selectedIds.forEach((id) => {
+        idsQuery.push(id);
     });
 
-    selectedUsersQuery.append("email", emailQuery.join(","));
+    selectedUsersQuery.append("ids", idsQuery.join(","));
 
     return (
         <Stack>
             <BreadCrumbs data={breadcrumbs} />
+            <Group wrap="wrap" grow w={"100%"} hiddenFrom="md">
+                <TextInput
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder={t("users.search_input")}
+                />
+            </Group>
             <Group>
-                <Group grow w={"100%"}>
+                <Group grow w={"100%"} visibleFrom="md">
                     <TextInput
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder={t("users.search_input")}
                     />
                 </Group>
                 <Group w={"100%"} justify="space-between">
-                    <Group>
+                    <Group hidden={user?.role !== "admin"}>
                         <Tooltip label={t("users.add_user")}>
                             <ActionIcon
                                 component={Link}
@@ -110,7 +129,7 @@ export const Users = () => {
                             </ActionIcon>
                         </Tooltip>
 
-                        {selectedRows.length > 0 && (
+                        {selectedIds.length > 0 && (
                             <Tooltip label={t("users.delete_user")}>
                                 <ActionIcon
                                     color="red"
@@ -132,17 +151,14 @@ export const Users = () => {
                         size="sm"
                     />
 
-                    <Group>
-                        <label>{t("users.table_page_size")}</label>
-                        <Select
-                            id="pageSize"
-                            value={String(pageSize)}
-                            w={100}
-                            withScrollArea
-                            onChange={(e) => setPageSize(Number(e))}
-                            data={["5", "10", "20", "30", "50", "100"]}
-                        />
-                    </Group>
+                    <Select
+                        id="pageSize"
+                        value={String(pageSize)}
+                        w={100}
+                        withScrollArea
+                        onChange={(e) => setPageSize(Number(e))}
+                        data={["5", "10", "20", "30", "50", "100"]}
+                    />
                 </Group>
                 <Group hiddenFrom="md" justify="center" w={"100%"}>
                     <Pagination
@@ -166,14 +182,14 @@ export const Users = () => {
                                 <Checkbox
                                     onChange={(e) => {
                                         if (e.target.checked) {
-                                            users.forEach((user) =>
-                                                setSelectedRows((prev) => [
+                                            users.forEach((user) => {
+                                                setSelectedIds((prev) => [
                                                     ...prev,
-                                                    user.email,
-                                                ])
-                                            );
+                                                    user._id,
+                                                ]);
+                                            });
                                         } else {
-                                            setSelectedRows([]);
+                                            setSelectedIds([]);
                                         }
                                     }}
                                 />
@@ -211,21 +227,20 @@ export const Users = () => {
                                     <Table.Th w={0}>
                                         <Checkbox
                                             aria-label="Select Row"
-                                            checked={selectedRows.includes(
-                                                user.email
+                                            checked={selectedIds.includes(
+                                                user._id
                                             )}
                                             onChange={(e) => {
                                                 if (e.target.checked) {
-                                                    setSelectedRows((prev) => [
+                                                    setSelectedIds((prev) => [
                                                         ...prev,
-                                                        user.email,
+                                                        user._id,
                                                     ]);
                                                 } else {
-                                                    setSelectedRows((prev) =>
+                                                    setSelectedIds((prev) =>
                                                         prev.filter(
-                                                            (email) =>
-                                                                email !==
-                                                                user.email
+                                                            (id) =>
+                                                                id !== user._id
                                                         )
                                                     );
                                                 }
@@ -244,7 +259,7 @@ export const Users = () => {
                                     <Table.Td>{user.email}</Table.Td>
                                     <Table.Td>
                                         {user.role === "admin" && (
-                                            <Badge color="red" variant="dot">
+                                            <Badge color="red" variant="light">
                                                 {t("users.role.admin")}
                                             </Badge>
                                         )}

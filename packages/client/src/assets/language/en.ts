@@ -4,6 +4,9 @@ export const en = {
         links: {
             dashboard: "Dashboard",
             users: "Users",
+            add: "Add",
+            edit: "Edit",
+            delete: "Delete",
         },
     },
     users: {
@@ -26,6 +29,17 @@ export const en = {
         table_page_size: "Page Size",
 
         empty: "No users found",
+
+        add_input: {
+            name: "Name",
+            email: "E-Mail",
+            password: "Password",
+            role: "Role",
+            submit: "Submit",
+            reset: "Reset",
+            error: "Something went wrong, please try again",
+            success: "User created",
+        },
     },
     login: {
         title: "Login",
@@ -39,5 +53,7 @@ export const en = {
             email: "Invalid email",
             password: "The password must be at least 4 characters",
         },
+        error: "Login Failed",
+        success: "Login Success",
     },
 } as const;

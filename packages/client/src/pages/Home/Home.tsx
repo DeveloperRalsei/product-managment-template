@@ -1,5 +1,5 @@
 import { Space, Stack, Title } from "@mantine/core";
-import { BreadCrumbs } from "../../../components/ui/Breadcrumbs";
+import { BreadCrumbs } from "../../components/ui/Breadcrumbs";
 import { useTranslation } from "react-i18next";
 
 export const Home = () => {

@@ -2,9 +2,9 @@ import { RequestHandler } from "express";
 import { verifyToken } from "../utils/token";
 
 export const authMiddleware: RequestHandler = (req, res, next) => {
-    const token = req.cookies.userToken;
+    const userToken = req.cookies.userToken;
 
-    if (!token) {
+    if (!userToken) {
         res.status(401).json({
             error: "Unauthorized",
             success: false,
@@ -13,7 +13,7 @@ export const authMiddleware: RequestHandler = (req, res, next) => {
     }
 
     try {
-        const isTokenValid = verifyToken(token);
+        const isTokenValid = verifyToken(userToken);
         if (!isTokenValid) {
             res.status(401).json({
                 error: "Unauthorized",
@@ -21,6 +21,8 @@ export const authMiddleware: RequestHandler = (req, res, next) => {
             });
             return;
         }
+
+        req.user = isTokenValid._doc;
 
         next();
     } catch (error) {

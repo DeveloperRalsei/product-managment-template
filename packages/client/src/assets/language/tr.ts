@@ -4,6 +4,9 @@ export const tr = {
         links: {
             dashboard: "Panel",
             users: "Kullanıcılar",
+            add: "Ekle",
+            edit: "Düzenle",
+            delete: "Sil",
         },
     },
     users: {
@@ -26,6 +29,17 @@ export const tr = {
         table_page_size: "Sayfa Sayısı",
 
         empty: "Kullanıcı bulunamadı",
+
+        add_input: {
+            name: "İsim",
+            email: "E-Posta",
+            password: "Şifre",
+            role: "Rol",
+            submit: "Kaydet",
+            reset: "Sıfırla",
+            error: "Bir şeyler ters gitti, lütfen tekrar deneyin",
+            success: "User created",
+        },
     },
     login: {
         title: "Giriş",
@@ -39,5 +53,7 @@ export const tr = {
             email: "Geçersiz e-posta",
             password: "Şifre en az 4 karakter içermelidir",
         },
+        error: "Giriş başarısız oldu",
+        success: "Giriş başarılı",
     },
 } as const;

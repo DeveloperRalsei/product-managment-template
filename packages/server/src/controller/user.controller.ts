@@ -6,8 +6,10 @@ import {
     findUserByEmail,
     findUserById,
     findUsersViaQuery,
+    deleteUser as delUser,
 } from "../service/user.service";
 import { User } from "@common";
+import { authByUser } from "../utils/authByUser";
 
 export const listUsers: RequestHandler = async (req, res) => {
     if (req.body) req.body = {};
@@ -62,6 +64,8 @@ export const getUser: RequestHandler = async (req, res) => {
             return;
         }
 
+        user.password = "The password must be hidden for privacy";
+
         res.status(200).json({
             message: "User found",
             success: true,
@@ -78,6 +82,8 @@ export const getUser: RequestHandler = async (req, res) => {
 };
 
 export const addUser: RequestHandler = async (req, res) => {
+    authByUser(req, res);
+
     let userBody: User = req.body;
 
     let { name, email, password, role } = userBody;
@@ -119,5 +125,32 @@ export const addUser: RequestHandler = async (req, res) => {
             success: false,
         });
         return;
+    }
+};
+
+export const deleteUser: RequestHandler = async (req, res) => {
+    authByUser(req, res);
+
+    const { id } = req.body;
+
+    if (!id) {
+        res.status(400).json({
+            error: "User not found",
+            success: false,
+        });
+        return;
+    }
+
+    try {
+        await delUser(id);
+
+        res.status(204).json({
+            message: "User deleted successfuly",
+        });
+    } catch (error) {
+        res.status(500).json({
+            error,
+            success: false,
+        });
     }
 };
