@@ -9,4 +9,6 @@ export interface User {
 
 export interface UserWithId extends User {
     _id: string;
+    createdAt: string;
+    updatedAt: string;
 }

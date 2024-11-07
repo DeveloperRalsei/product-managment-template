@@ -1,15 +1,16 @@
 import { RequestHandler } from "express";
 import userModel from "../model/user.model";
-
 import {
     createUser,
     findUserByEmail,
     findUserById,
     findUsersViaQuery,
     deleteUser as delUser,
+    updateUser as upUser,
 } from "../service/user.service";
 import { User } from "@common";
 import { authByUser } from "../utils/authByUser";
+import { hash } from "../utils/hasher";
 
 export const listUsers: RequestHandler = async (req, res) => {
     if (req.body) req.body = {};
@@ -152,5 +153,41 @@ export const deleteUser: RequestHandler = async (req, res) => {
             error,
             success: false,
         });
+    }
+};
+
+export const updateUser: RequestHandler = async (req, res) => {
+    authByUser(req, res);
+
+    const user = req.body;
+    const { name, email, role, password } = user;
+
+    if (!email || !password) {
+        res.status(400).json({
+            error: "Email or password is required",
+            success: false,
+        });
+        return;
+    }
+
+    if (!name) user.name = "";
+    if (!role) user.role = "user";
+
+    try {
+        let updatedUser = await upUser(user);
+
+        updatedUser!.password = "The password must be hidden for privacy";
+
+        res.status(200).json({
+            message: "User updated successfuly",
+            updatedUser,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Internel Server Error",
+            success: false,
+        });
+        return;
     }
 };

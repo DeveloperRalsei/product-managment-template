@@ -13,9 +13,12 @@ import {
     IconLogout,
     IconSettings,
 } from "@tabler/icons-react";
+import { useSettings } from "../../../context/SettingsContext";
 import { Link } from "react-router-dom";
 
 export const UserManager = ({ user }: { user: User }) => {
+    const { openDrawer } = useSettings();
+
     return (
         <Group>
             <Group h={60} w={"100%"} justify="space-between" wrap="nowrap">
@@ -55,7 +58,7 @@ export const UserManager = ({ user }: { user: User }) => {
                             </Group>
                             <Menu.Divider />
                             <Group justify="space-between" w={"100%"}>
-                                <ActionIcon>
+                                <ActionIcon onClick={openDrawer}>
                                     <IconSettings size={16} />
                                 </ActionIcon>
                                 <Group>

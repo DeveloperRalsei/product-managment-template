@@ -35,10 +35,6 @@ export const router = createBrowserRouter([
                 path: "users/add",
                 element: <Add />,
             },
-            {
-                path: "*",
-                element: <Error />,
-            },
         ],
     },
     {

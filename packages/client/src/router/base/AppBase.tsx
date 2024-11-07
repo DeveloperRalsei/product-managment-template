@@ -15,6 +15,8 @@ import { IconChevronRight, IconHome, IconUsers } from "@tabler/icons-react";
 import { UserManager } from "../../components/ui/UserManager";
 import { useUser } from "../../context/UserContext";
 import { useEffect } from "react";
+import { ColorSchemeToggler } from "../../components/ui/ColorSchemeToggler";
+import { FullScreenToggler } from "../../components/ui/FullScreenToggler";
 
 function AppBase() {
     const [opened, { toggle, close }] = useDisclosure(false);
@@ -82,6 +84,10 @@ function AppBase() {
                         <Title order={1} fz={"h2"}>
                             {t("app.title")}
                         </Title>
+                    </Group>
+                    <Group>
+                        <FullScreenToggler />
+                        <ColorSchemeToggler />
                     </Group>
                 </Group>
             </AppShell.Header>

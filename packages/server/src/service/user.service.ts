@@ -1,6 +1,6 @@
 import { ObjectId } from "mongoose";
 import userModel from "../model/user.model";
-import { User } from "@common";
+import { User, UserWithId } from "@common";
 import { hash } from "../utils/hasher";
 
 export async function findUsers() {
@@ -38,4 +38,10 @@ export async function findUserByEmail(email: string) {
 
 export async function deleteUser(id: ObjectId | string) {
     return userModel.findByIdAndDelete(id);
+}
+
+export async function updateUser(user: UserWithId) {
+    user.password = await hash(user.password);
+    let { createdAt, updatedAt, ...otherUserData } = user;
+    return userModel.findByIdAndUpdate(user._id, otherUserData);
 }

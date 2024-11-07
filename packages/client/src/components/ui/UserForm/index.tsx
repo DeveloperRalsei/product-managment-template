@@ -20,7 +20,9 @@ export const UserForm = ({
     loading: boolean;
 }) => {
     return (
-        <form onSubmit={form.onSubmit((v) => handleSubmit(v))}>
+        <form
+            onSubmit={form.onSubmit((v) => handleSubmit(v))}
+            onReset={form.reset}>
             <Stack>
                 <TextInput
                     label={t("users.add_input.name")}

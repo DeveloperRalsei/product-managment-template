@@ -11,6 +11,8 @@ import "@mantine/core/styles.css";
 import "@mantine/nprogress/styles.css";
 import "@mantine/notifications/styles.css";
 import "./index.css";
+import { SettingsProvider } from "./context/SettingsContext";
+import { SettingsDrawer } from "./components/SettingsDrawer";
 
 const theme = createTheme({
     components: {
@@ -33,9 +35,12 @@ createRoot(document.getElementById("root")!).render(
         <Notifications />
         <NavigationProgress />
         <I18nextProvider i18n={i18n}>
-            <UserProvider>
-                <Router />
-            </UserProvider>
+            <SettingsProvider>
+                <SettingsDrawer />
+                <UserProvider>
+                    <Router />
+                </UserProvider>
+            </SettingsProvider>
         </I18nextProvider>
     </MantineProvider>
 );

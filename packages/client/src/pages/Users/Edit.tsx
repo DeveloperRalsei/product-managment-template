@@ -30,6 +30,7 @@ export const Edit = () => {
                 const { password, ...userValues } = data.user;
                 setUser(userValues);
                 form.setValues(userValues);
+                form.setInitialValues(userValues);
             } catch (error) {
                 showNotification({
                     message: "Something went wrong",
@@ -44,8 +45,37 @@ export const Edit = () => {
         fetchUser(id!);
     }, [id]);
 
-    const handleSubmit = (values: any) => {
-        console.log(values);
+    const handleSubmit = async (values: any) => {
+        nprogress.start();
+        setLoading(true);
+
+        try {
+            const response = await fetch("/api/v1/users/update", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error("Something went wrong");
+            }
+
+            showNotification({
+                message: "User updated successfuly",
+                color: "green",
+            });
+        } catch (error) {
+            showNotification({
+                message: "Something went wrong",
+                color: "red",
+            });
+        }
+
+        nprogress.complete();
+        setLoading(false);
     };
 
     const breadcrumbs = [
