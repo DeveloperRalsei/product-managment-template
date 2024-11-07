@@ -144,7 +144,7 @@ export const deleteUser: RequestHandler = async (req, res) => {
     try {
         await delUser(id);
 
-        res.status(204).json({
+        res.status(200).json({
             message: "User deleted successfuly",
         });
     } catch (error) {

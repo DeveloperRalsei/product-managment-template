@@ -30,6 +30,12 @@ export const tr = {
 
         empty: "Kullanıcı bulunamadı",
 
+        validation: {
+            name: "En az 4 karakter içermelidir",
+            email: "Geçersiz e-posta",
+            password: "En az 4 karakter içermelidir",
+        },
+
         add_input: {
             name: "İsim",
             email: "E-Posta",

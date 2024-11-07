@@ -42,7 +42,13 @@ export const Delete = () => {
 
                     setUsers((prev) => [...prev, data.user]);
                 }
-            } catch (error) {}
+            } catch (error) {
+                console.error(error);
+                showNotification({
+                    message: "User not found",
+                    color: "red",
+                });
+            }
             nprogress.complete();
             setLoading(false);
         }
@@ -79,9 +85,11 @@ export const Delete = () => {
                     },
                 });
 
-                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error("User not found");
+                }
 
-                console.log(data);
+                const data = await response.json();
                 showNotification({
                     message: "User Deleted Successfuly",
                     color: "green",
@@ -89,6 +97,10 @@ export const Delete = () => {
             }
         } catch (error) {
             console.error(error);
+            showNotification({
+                message: "User Deleted Failed",
+                color: "red",
+            });
         }
 
         setLoading(false);

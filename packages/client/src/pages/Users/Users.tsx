@@ -1,32 +1,27 @@
-import {
-    ActionIcon,
-    Badge,
-    Text,
-    Checkbox,
-    Group,
-    Loader,
-    Stack,
-    Table,
-    TextInput,
-    Avatar,
-    Tooltip,
-    Pagination,
-    Select,
-} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useEffect, useReducer, useState } from "react";
 import { BreadCrumbs } from "../../components/ui/Breadcrumbs";
-import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+    ActionIcon,
+    Group,
+    Loader,
+    Stack,
+    TextInput,
+    Pagination,
+    Select,
+    Tooltip,
+    Box,
+} from "@mantine/core";
+import { IconPlus, IconTrash } from "@tabler/icons-react";
+import { Link } from "react-router-dom";
 import { reducer, initialState, reducerValues } from "./userReducer";
 import { useUser } from "../../context/UserContext";
+import { useDebouncedValue } from "@mantine/hooks";
+import { UserTable } from "../../components/ui/UsersTable";
 
 export const Users = () => {
     const { t } = useTranslation();
-    const navigate = useNavigate();
-
     const [{ users }, dispatch] = useReducer(reducer, initialState);
-
     const { SET_USERS } = reducerValues;
 
     const [isEmpty, setIsEmpty] = useState(false);
@@ -37,35 +32,21 @@ export const Users = () => {
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const { user } = useUser();
+    const [debounced] = useDebouncedValue(search, 200);
 
     useEffect(() => {
         async function fetchData() {
             try {
                 const response = await fetch("/api/v1/users");
-
                 if (!response.ok) {
                     window.open("/", "_self");
                     throw new Error("Network Error");
                 }
-
                 const data = await response.json();
-
                 if (data.users.length === 0) {
                     setIsEmpty(true);
                     return;
                 }
-
-                // Array(200)
-                //     .fill(0)
-                //     .forEach((_, index) => {
-                //         data.users.push({
-                //             _id: Math.random().toString(36).substring(2, 15),
-                //             name: `User ${index + 1}`,
-                //             email: `user${index + 1}@example.com`,
-                //             role: "user",
-                //         });
-                //     });
-
                 dispatch({ type: SET_USERS, payload: data.users });
             } catch (error) {
                 console.error(error);
@@ -78,30 +59,25 @@ export const Users = () => {
     }, []);
 
     const filteredUsers = users.filter((user) =>
-        [user.name, user.email].some((value) => value.includes(search))
-    );
-
-    const paginatedUsers = filteredUsers.slice(
-        (page - 1) * pageSize,
-        page * pageSize
+        [user.name, user.email].some((value) => value.includes(debounced))
     );
 
     const breadcrumbs = [
         { label: t("app.links.dashboard"), href: "/dashboard" },
-        {
-            label: t("app.links.users"),
-            href: "/dashboard/users",
-        },
+        { label: t("app.links.users"), href: "/dashboard/users" },
     ];
 
-    const selectedUsersQuery = new URLSearchParams();
+    const onToggleSelect = (userId: string) => {
+        setSelectedIds((prev) =>
+            prev.includes(userId)
+                ? prev.filter((id) => id !== userId)
+                : [...prev, userId]
+        );
+    };
 
-    let idsQuery: string[] = [];
-    selectedIds.forEach((id) => {
-        idsQuery.push(id);
-    });
-
-    selectedUsersQuery.append("ids", idsQuery.join(","));
+    const onSelectAll = (isSelected: boolean) => {
+        setSelectedIds(isSelected ? users.map((user) => user._id) : []);
+    };
 
     return (
         <Stack>
@@ -134,15 +110,15 @@ export const Users = () => {
                                 <ActionIcon
                                     color="red"
                                     component={Link}
-                                    to={
-                                        "/dashboard/users/delete?" +
-                                        selectedUsersQuery
-                                    }>
+                                    to={`/dashboard/users/delete?ids=${selectedIds.join(
+                                        ","
+                                    )}`}>
                                     <IconTrash size={16} />
                                 </ActionIcon>
                             </Tooltip>
                         )}
                     </Group>
+
                     <Pagination
                         total={Math.ceil(filteredUsers.length / pageSize)}
                         visibleFrom="md"
@@ -150,7 +126,6 @@ export const Users = () => {
                         onChange={setPage}
                         size="sm"
                     />
-
                     <Select
                         id="pageSize"
                         value={String(pageSize)}
@@ -160,130 +135,27 @@ export const Users = () => {
                         data={["5", "10", "20", "30", "50", "100"]}
                     />
                 </Group>
-                <Group hiddenFrom="md" justify="center" w={"100%"}>
-                    <Pagination
-                        total={Math.ceil(filteredUsers.length / pageSize)}
-                        value={page}
-                        onChange={setPage}
-                        withControls={false}
-                        size={"sm"}
-                    />
-                </Group>
             </Group>
-            <Table.ScrollContainer minWidth={700}>
-                <Table
-                    highlightOnHover
-                    withColumnBorders
-                    striped
-                    withTableBorder>
-                    <Table.Thead>
-                        <Table.Tr>
-                            <Table.Td w={0}>
-                                <Checkbox
-                                    onChange={(e) => {
-                                        if (e.target.checked) {
-                                            users.forEach((user) => {
-                                                setSelectedIds((prev) => [
-                                                    ...prev,
-                                                    user._id,
-                                                ]);
-                                            });
-                                        } else {
-                                            setSelectedIds([]);
-                                        }
-                                    }}
-                                />
-                            </Table.Td>
-                            <Table.Td w={0}>#</Table.Td>
-                            <Table.Td>{t("users.table_name")}</Table.Td>
-                            <Table.Td>{t("users.table_email")}</Table.Td>
-                            <Table.Td>{t("users.table_role")}</Table.Td>
-                            <Table.Td w={0}>{t("users.table_edit")}</Table.Td>
-                        </Table.Tr>
-                    </Table.Thead>
-
-                    <Table.Tbody>
-                        {loading ? (
-                            <Table.Tr>
-                                <Table.Td colSpan={99} ta={"center"}>
-                                    <Loader />
-                                </Table.Td>
-                            </Table.Tr>
-                        ) : isError ? (
-                            <Table.Tr>
-                                <Table.Td colSpan={99} ta={"center"}>
-                                    <Text>{t("users.error")}</Text>
-                                </Table.Td>
-                            </Table.Tr>
-                        ) : isEmpty ? (
-                            <Table.Tr>
-                                <Table.Td colSpan={99} ta={"center"}>
-                                    <Text>{t("users.empty")}</Text>
-                                </Table.Td>
-                            </Table.Tr>
-                        ) : (
-                            paginatedUsers.map((user, index) => (
-                                <Table.Tr key={user.name + user._id + index}>
-                                    <Table.Th w={0}>
-                                        <Checkbox
-                                            aria-label="Select Row"
-                                            checked={selectedIds.includes(
-                                                user._id
-                                            )}
-                                            onChange={(e) => {
-                                                if (e.target.checked) {
-                                                    setSelectedIds((prev) => [
-                                                        ...prev,
-                                                        user._id,
-                                                    ]);
-                                                } else {
-                                                    setSelectedIds((prev) =>
-                                                        prev.filter(
-                                                            (id) =>
-                                                                id !== user._id
-                                                        )
-                                                    );
-                                                }
-                                            }}
-                                        />
-                                    </Table.Th>
-                                    <Table.Th>
-                                        {(page - 1) * pageSize + index + 1}
-                                    </Table.Th>
-                                    <Table.Td>
-                                        <Group gap={5}>
-                                            <Avatar size={35} />
-                                            {user.name}
-                                        </Group>
-                                    </Table.Td>
-                                    <Table.Td>{user.email}</Table.Td>
-                                    <Table.Td>
-                                        {user.role === "admin" && (
-                                            <Badge color="red" variant="light">
-                                                {t("users.role.admin")}
-                                            </Badge>
-                                        )}
-                                        {user.role === "user" && (
-                                            <Badge
-                                                color="blue"
-                                                variant="default">
-                                                {t("users.role.user")}
-                                            </Badge>
-                                        )}
-                                    </Table.Td>
-                                    <Table.Td>
-                                        <ActionIcon
-                                            component={Link}
-                                            to={`/dashboard/users/edit/${user._id}`}>
-                                            <IconEdit />
-                                        </ActionIcon>
-                                    </Table.Td>
-                                </Table.Tr>
-                            ))
-                        )}
-                    </Table.Tbody>
-                </Table>
-            </Table.ScrollContainer>
+            <Group w={"100%"} justify="center" hiddenFrom="md">
+                <Pagination
+                    total={Math.ceil(filteredUsers.length / pageSize)}
+                    value={page}
+                    onChange={setPage}
+                    size="sm"
+                    display={"block"}
+                />
+            </Group>
+            <UserTable
+                users={filteredUsers}
+                loading={loading}
+                isError={isError}
+                isEmpty={isEmpty}
+                selectedIds={selectedIds}
+                onToggleSelect={onToggleSelect}
+                onSelectAll={onSelectAll}
+                page={page}
+                pageSize={pageSize}
+            />
         </Stack>
     );
 };

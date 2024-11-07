@@ -30,6 +30,12 @@ export const en = {
 
         empty: "No users found",
 
+        validation: {
+            name: "Enter a name that contains at least 4 character",
+            email: "Enter a valid email",
+            password: "Enter a password that contains at least 4 character",
+        },
+
         add_input: {
             name: "Name",
             email: "E-Mail",

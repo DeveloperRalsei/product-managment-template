@@ -1,12 +1,4 @@
-import {
-    Button,
-    Checkbox,
-    Group,
-    PasswordInput,
-    Select,
-    Stack,
-    TextInput,
-} from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { BreadCrumbs } from "../../components/ui/Breadcrumbs";
 import { useTranslation } from "react-i18next";
 import { useForm } from "@mantine/form";
@@ -14,27 +6,14 @@ import { User } from "@common";
 import { showNotification } from "@mantine/notifications";
 import { nprogress } from "@mantine/nprogress";
 import { useState } from "react";
+import { UserForm } from "../../components/ui/UserForm";
+import { formInitialValues } from "../../definitions";
 
 export const Add = () => {
     const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
 
-    const form = useForm({
-        initialValues: {
-            name: "",
-            email: "",
-            password: "",
-            role: "user",
-        } as User,
-        validate: {
-            name: (value) =>
-                value.length >= 4 ? null : t("users.validation.name"),
-            email: (value) =>
-                /^\S+@\S+$/.test(value) ? null : t("users.validation.email"),
-            password: (value) =>
-                value.length >= 4 ? null : t("users.validation.password"),
-        },
-    });
+    const form = useForm<User>(formInitialValues);
 
     const breadcrumbs = [
         {
@@ -66,11 +45,7 @@ export const Add = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                console.log(data);
-                showNotification({
-                    message: t("users.add_input.error"),
-                    color: "red",
-                });
+                throw new Error(data.message);
             }
 
             if (import.meta.env.DEV) {
@@ -95,36 +70,11 @@ export const Add = () => {
         <Stack>
             <BreadCrumbs data={breadcrumbs} />
 
-            <form onSubmit={form.onSubmit((v) => handleSubmit(v))}>
-                <Stack>
-                    <TextInput
-                        label={t("users.add_input.name")}
-                        {...form.getInputProps("name")}
-                    />
-                    <TextInput
-                        label={t("users.add_input.email")}
-                        {...form.getInputProps("email")}
-                    />
-                    <PasswordInput
-                        label={t("users.add_input.password")}
-                        {...form.getInputProps("password")}
-                    />
-                    <Select
-                        label={t("users.add_input.role")}
-                        data={["admin", "user"]}
-                        clearable={false}
-                        {...form.getInputProps("role")}
-                    />
-                </Stack>
-                <Group mt={"md"}>
-                    <Button type="reset" variant="default">
-                        {t("users.add_input.reset")}
-                    </Button>
-                    <Button type="submit" loading={loading}>
-                        {t("users.add_input.submit")}
-                    </Button>
-                </Group>
-            </form>
+            <UserForm
+                form={form}
+                handleSubmit={handleSubmit}
+                loading={loading}
+            />
         </Stack>
     );
 };
