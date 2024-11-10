@@ -1,4 +1,4 @@
-import { createTheme, MantineProvider } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import { createRoot } from "react-dom/client";
 import Router from "./router";
 import { I18nextProvider } from "react-i18next";
@@ -13,28 +13,15 @@ import "@mantine/notifications/styles.css";
 import "./index.css";
 import { SettingsProvider } from "./context/SettingsContext";
 import { SettingsDrawer } from "./components/SettingsDrawer";
-
-const theme = createTheme({
-    components: {
-        ActionIcon: {
-            defaultProps: {
-                variant: "light",
-            },
-        },
-
-        Group: {
-            defaultProps: {
-                wrap: "nowrap",
-            },
-        },
-    },
-});
+import { theme, defaultSettings } from "./assets/settings";
 
 createRoot(document.getElementById("root")!).render(
-    <MantineProvider theme={theme} defaultColorScheme="dark">
+    <MantineProvider
+        theme={theme}
+        defaultColorScheme={defaultSettings.colorScheme}>
         <Notifications />
         <NavigationProgress />
-        <I18nextProvider i18n={i18n}>
+        <I18nextProvider i18n={i18n} defaultNS={[]}>
             <SettingsProvider>
                 <SettingsDrawer />
                 <UserProvider>

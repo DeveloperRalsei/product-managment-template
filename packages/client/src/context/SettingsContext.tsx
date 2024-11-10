@@ -1,15 +1,16 @@
 import { useDisclosure } from "@mantine/hooks";
 import { createContext, ReactNode, useContext } from "react";
+import { defaultSettings, settingsType } from "../assets/settings";
 
 interface SettingsContextProps {
-    isDrawerOpen: boolean;
-    openDrawer: () => void;
-    closeDrawer: () => void;
+    isSettingsOpen: boolean;
+    openSettings: () => void;
+    closeSettings: () => void;
 }
 
-const SettingContext = createContext<SettingsContextProps | undefined>(
-    undefined
-);
+const SettingContext = createContext<
+    (SettingsContextProps & { settings: settingsType }) | undefined
+>(undefined);
 
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     const [opened, { open, close }] = useDisclosure();
@@ -17,9 +18,10 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     return (
         <SettingContext.Provider
             value={{
-                isDrawerOpen: opened,
-                openDrawer: open,
-                closeDrawer: close,
+                isSettingsOpen: opened,
+                openSettings: open,
+                closeSettings: close,
+                settings: { ...defaultSettings },
             }}>
             {children}
         </SettingContext.Provider>

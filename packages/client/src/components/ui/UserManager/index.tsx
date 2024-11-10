@@ -17,7 +17,7 @@ import { useSettings } from "../../../context/SettingsContext";
 import { Link } from "react-router-dom";
 
 export const UserManager = ({ user }: { user: User }) => {
-    const { openDrawer } = useSettings();
+    const { openSettings } = useSettings();
 
     return (
         <Group>
@@ -58,7 +58,7 @@ export const UserManager = ({ user }: { user: User }) => {
                             </Group>
                             <Menu.Divider />
                             <Group justify="space-between" w={"100%"}>
-                                <ActionIcon onClick={openDrawer}>
+                                <ActionIcon onClick={openSettings}>
                                     <IconSettings size={16} />
                                 </ActionIcon>
                                 <Group>

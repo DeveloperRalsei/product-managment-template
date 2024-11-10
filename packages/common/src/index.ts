@@ -12,3 +12,15 @@ export interface UserWithId extends User {
     createdAt: string;
     updatedAt: string;
 }
+
+export type Product = {
+    name: string;
+    description: string;
+    price: number;
+};
+
+export type ProductWithId = Product & {
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
+};
